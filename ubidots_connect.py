@@ -2,7 +2,6 @@ import network
 import urequests
 from hcsr04 import HCSR04
 from time import sleep
-from machine import Pin
 
 # Konfigurasi WiFi
 SSID = "Galaxy"
@@ -42,7 +41,7 @@ def send_to_ubidots(value):
         print("Failed to send data:", e)
 
 # Inisialisasi sensor
-sensor = HCSR04(trigger_pin=12, echo_pin=14, echo_timeout_us=10000)
+sensor = HCSR04(trigger_pin=21, echo_pin=5, echo_timeout_us=10000)
 
 # Mulai program
 connect_wifi()
