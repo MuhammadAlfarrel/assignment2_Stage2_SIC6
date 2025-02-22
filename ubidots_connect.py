@@ -3,6 +3,7 @@ import urequests
 from hcsr04 import HCSR04
 from time import sleep
 from machine import Pin  # Tambahkan untuk kontrol LED
+import dht
 
 # Konfigurasi WiFi
 SSID = "Galaxy"
@@ -12,7 +13,7 @@ PASSWORD = "Alfarrel"
 UBIDOTS_TOKEN = "BBUS-g6JUsvQ7XKCQNRk3XFqDwHTGZoRhu5"
 DEVICE_LABEL = "ubidots_sensor_assignment"  # Ubah sesuai label device di Ubidots
 VARIABLE_LABEL = "jarak"
-VARIABLE_WARNING = "peringatan"  # Pastikan tidak ada spasi
+VARIABLE_WARNING = "peringatan"
 
 # Koneksi WiFi
 def connect_wifi():
@@ -35,7 +36,7 @@ def send_to_ubidots(value, warn):
     }
     payload = {
         VARIABLE_LABEL: value,
-        VARIABLE_WARNING: warn  # Gunakan angka, bukan teks!
+        VARIABLE_WARNING: warn# Gunakan angka, bukan teks!
     }
     
     try:
@@ -44,10 +45,10 @@ def send_to_ubidots(value, warn):
         response.close()
     except Exception as e:
         print("Failed to send data:", e)
-
+        
 # Inisialisasi sensor & LED
 sensor = HCSR04(trigger_pin=21, echo_pin=5, echo_timeout_us=10000)
-led = Pin(18, Pin.OUT)  # Perbaikan: GPIO 18 sebagai output LED
+led = Pin(18, Pin.OUT)
 
 # Mulai program
 connect_wifi()
@@ -70,9 +71,11 @@ while True:
             sleep(0.2)
     else:
         warn = 0  # Jika aman, ubah warn jadi 0
+        print(distance)
+        send_to_ubidots(distance, warn)
+    
     
     # Kirim data ke Ubidots setelah LED blinking selesai
-    send_to_ubidots(distance, warn)
     print(distance)
 
     sleep(5)  # Tunggu 5 detik sebelum membaca ulang sensor
