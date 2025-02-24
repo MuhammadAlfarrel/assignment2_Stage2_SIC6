@@ -76,7 +76,6 @@ def read_dht():
     return None, None
 
 sensor = HCSR04(trigger_pin=21, echo_pin=5, echo_timeout_us=10000)
-led = Pin(18, Pin.OUT)
 
 connect_wifi()
 
@@ -89,11 +88,6 @@ while True:
         warn = 1 if distance < 20 else 0
         if distance < 20:
             print("WARNING! Water Level below 20cm!")
-            for _ in range(5):
-                led.value(1)
-                sleep(0.2)
-                led.value(0)
-                sleep(0.2)
         send_to_ubidots(distance, warn, temp, humid)
         send_to_server(distance, warn, temp, humid)
     else:
