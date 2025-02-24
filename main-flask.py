@@ -14,10 +14,19 @@ collection = db.SensorData
 def receive_sensor_data():
     try:
         data = request.get_json()
-        if data and "distance" in data:
+        if data and all(key in data for key in ("distance", "warning", "temperature", "humidity")):
             distance = data["distance"]
+            warning = data["warning"]
+            temperature = data["temperature"]
+            humidity = data["humidity"]
             timestamp = datetime.now()
-            sensor_data = {"distance": distance, "timestamp": timestamp}
+            sensor_data = {
+                "distance": distance,
+                "warning": warning,
+                "temperature": temperature,
+                "humidity": humidity,
+                "timestamp": timestamp
+            }
             collection.insert_one(sensor_data)
             return jsonify({"message": "Data received and saved"}), 200
         else:
